@@ -27,7 +27,7 @@
   function imageHtml(p, cls) {
     if (!p.image) return '';
     return `<div class="${cls} bg-${p.tone || 'gray'}" data-fallback="${esc(p.title)}">` +
-      `<img src="${esc(p.image)}" alt="${esc(p.title)}" onerror="this.parentNode.textContent=this.parentNode.dataset.fallback">` +
+      `<img src="${esc(p.image)}" loading="lazy" alt="${esc(p.title)}" onerror="this.parentNode.textContent=this.parentNode.dataset.fallback">` +
       `</div>`;
   }
 
