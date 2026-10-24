@@ -10,14 +10,15 @@
 </head>
 <body>
   <header class="topbar">
-    <button class="menu-btn" id="menuBtn" aria-label="목록 열기">☰</button>
-    <a class="brand" href="#">관륜 세계관</a>
-    <button class="theme-btn" id="themeBtn" aria-label="테마 전환">◐</button>
+    <a class="brand" href="#">관륜<span>.</span></a>
+    <nav class="tabs" id="tabs">
+      <a href="#" data-tab="gallery">지역</a>
+      <a href="#map" data-tab="map">지도</a>
+      <a href="#docs" data-tab="docs">설정</a>
+    </nav>
+    <button class="icon-btn" id="themeBtn" aria-label="테마 전환">◐</button>
   </header>
-  <div class="layout">
-    <nav class="sidebar" id="sidebar"></nav>
-    <main class="content" id="content"></main>
-  </div>
+  <main id="content"></main>
 
   <script src="content/world.js"></script>
   <script src="content/regions.js"></script>
