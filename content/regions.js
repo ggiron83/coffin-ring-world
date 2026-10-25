@@ -6,7 +6,7 @@ WORLD.pages.push({
   title: '세베랴 연방',
   subtitle: '북동 · 슬라브 파이프라인 도시',
   tone: 'blue',
-  image: 'images/severya.jpg',
+  image: 'images/severya.jpg?v=2',
   refs: ['명일방주 · 우르수스 제국', '젠레스 존 제로 · 뉴에리두'],
   md: `
 ## 한 줄 컨셉
