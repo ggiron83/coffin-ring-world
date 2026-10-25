@@ -66,20 +66,19 @@ WORLD.pages.push({
 - Opus 구독은 Normal 크기 · 1장 생성일 때 Anlas가 들지 않는다. 생성 버튼에 **0 Anlas** 가 보이는지 확인하고 누른다.
 - Undesired Content는 \`content/prompts.js\` 의 NEGATIVE 값을 쓴다.
 
+### 화풍 통일 규칙
+- 모든 지역이 **같은 화풍 블록**을 쓴다. \`content/prompts.js\` 의 STYLE 값(절제된 채도, 회화풍, 부드러운 확산광)이 모든 지역 프롬프트 뒤에 붙는다.
+- 게임 태그는 **\`arknights\` 하나로 통일**한다. 지역마다 다른 게임 태그를 쓰면 화풍이 제각각이 된다 (이전 버전의 문제).
+- Undesired에 \`neon lights, cyberpunk, hologram, oversaturated\` 를 넣어 흔한 네온 사이버펑크로 흐르지 않게 한다.
+- 대체과학 요소는 안테나 · 배관 · 송신탑처럼 **건축에 녹여서** 절제해 넣는다.
+
 ### 프롬프트 작성 요령 (시행착오에서 얻은 것)
-- **맨 앞에 게임 이름 태그**를 둔다: \`arknights\`, \`wuthering waves\`, \`zenless zone zero\`, \`reverse:1999\`. 이것만으로 화풍이 크게 달라진다.
+- **맨 앞에 게임 이름 태그**를 두면 화풍이 크게 달라진다: \`arknights\`, \`wuthering waves\`, \`zenless zone zero\`, \`reverse:1999\`.
 - V5는 **자연어 문장 1~2개 + 핵심 태그 10여 개** 조합이 잘 먹힌다. 문장 안에도 "in the style of ○○ background art"를 넣는다.
 - \`no humans, scenery\` 를 넣고, Undesired에 \`people, 1girl, 1boy\` 를 넣어 인물을 뺀다.
 - 지시하지 않은 행성이 끼어들면 Undesired에 \`planet, moon\` 을 넣는다.
 - 가중치: \`1.4::태그::\` 또는 \`{{태그}}\`. 단 **태그 안에 콜론이 있으면(reverse:1999) \`::\` 가중치를 쓰면 이미지가 노이즈로 깨진다.** 이때는 중괄호를 쓴다.
-- 분위기 태그로 지역 성격을 고정한다: 명일방주 계열은 \`muted colors, desaturated, dark atmosphere\`, 젠레스 존 제로 계열은 \`bold shapes, vivid colors, cel shading\`, 리버스 1999 계열은 \`vintage, painterly\`.
-
-| 지역 | 스타일 태그 |
-|---|---|
-| 세베랴 · 적막대 | arknights |
-| 흐림헤임 · 청운국 | wuthering waves |
-| 카스카라 · 철새 선단 | zenless zone zero |
-| 자르카 · 아우라 | reverse:1999 |
+- 프롬프트 칸은 손으로 치면 맨 앞의 \`{\` 가 빠지는 경우가 있다. 붙여 넣은 뒤 첫 글자를 확인한다.
 
 ## 예전 방식: Gemini
 ### 방법 A: Gemini 앱에서 직접 (구독만으로 가능)
@@ -106,6 +105,6 @@ python tools/gemini_images.py --only severya --force
 
 ## 프롬프트 수정
 - 프롬프트는 \`content/prompts.js\` 한 곳에서 관리한다. 사이트와 스크립트가 같은 파일을 읽는다.
-- STYLE 값은 모든 프롬프트 끝에 붙는 공통 문장이다. 지금은 지역마다 스타일이 달라 비워 두었다.
+- STYLE 값은 모든 프롬프트 끝에 붙는 공통 화풍 문장이다. 화풍을 바꾸려면 이것만 고친다.
 `
 });
