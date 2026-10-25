@@ -6,7 +6,7 @@ WORLD.pages.push({
   title: '세베랴 연방',
   subtitle: '북동 · 슬라브 파이프라인 도시',
   tone: 'blue',
-  image: 'images/severya.png',
+  image: 'images/severya.jpg',
   refs: ['명일방주 · 우르수스 제국', '젠레스 존 제로 · 뉴에리두'],
   md: `
 ## 한 줄 컨셉
@@ -54,7 +54,7 @@ WORLD.pages.push({
   title: '흐림헤임 피오르 연합',
   subtitle: '북서 · 북유럽 신화의 근미래',
   tone: 'teal',
-  image: 'images/hrimheim.png',
+  image: 'images/hrimheim.jpg',
   refs: ['명일방주 · 쉐라그', '명일방주 · 사미', '룬테라 · 프렐요드', '카오스 제로 나이트메어 · 아카이브 룸'],
   md: `
 ## 한 줄 컨셉
@@ -107,7 +107,7 @@ WORLD.pages.push({
   title: '청운국',
   subtitle: '동 · 운해 위의 산수화 도시',
   tone: 'coral',
-  image: 'images/cheongun.png',
+  image: 'images/cheongun.jpg',
   refs: ['메이플스토리 · 무릉', '명조 · 금주 (대비용)'],
   md: `
 ## 한 줄 컨셉
@@ -159,7 +159,7 @@ WORLD.pages.push({
   title: '적막대',
   subtitle: '중앙 · 신해 낙하흔',
   tone: 'gray',
-  image: 'images/silent.png',
+  image: 'images/silent.jpg',
   refs: ['명조 · 폐허 탐사', '카오스 제로 나이트메어 · 카오스'],
   md: `
 ## 한 줄 컨셉
@@ -192,13 +192,13 @@ WORLD.pages.push({
   id: 'zarqa',
   group: '지역',
   title: '자르카 칼리프령',
-  subtitle: '적도 · 관륜 직하의 거울사막',
+  subtitle: '남부 · 관륜 그늘띠의 거울사막',
   tone: 'amber',
-  image: 'images/zarqa.png',
+  image: 'images/zarqa.jpg',
   refs: ['룬테라 · 슈리마', '명일방주 · 사르곤'],
   md: `
 ## 한 줄 컨셉
-관륜이 바로 머리 위에 걸려, 고리의 그림자가 달력이 되는 페르시아풍 레트로퓨처 사막.
+관륜이 거의 머리 위에 걸리고 겨울마다 고리의 그림자가 지나가, 그 그림자가 달력이 되는 페르시아풍 레트로퓨처 사막.
 
 ## 레퍼런스
 | 게임 · 지역 | 가져온 것 | 다른 점 |
@@ -237,7 +237,7 @@ WORLD.pages.push({
   title: '카스카라 자유항',
   subtitle: '남서 · 1980년대 라틴 레트로',
   tone: 'pink',
-  image: 'images/cascara.png',
+  image: 'images/cascara.jpg',
   refs: ['룬테라 · 빌지워터', '젠레스 존 제로 · 뉴에리두'],
   md: `
 ## 한 줄 컨셉
@@ -272,7 +272,7 @@ WORLD.pages.push({
   title: '아우라 부유군도',
   subtitle: '남동 해상 · 중력 이상',
   tone: 'purple',
-  image: 'images/aura.png',
+  image: 'images/aura.jpg',
   refs: ['메이플스토리 · 오르비스', '메이플스토리 · 루디브리엄'],
   md: `
 ## 한 줄 컨셉
@@ -302,7 +302,7 @@ WORLD.pages.push({
   title: '철새 선단',
   subtitle: '유랑 세력 · 대륙 순환 열차',
   tone: 'green',
-  image: 'images/migrants.png',
+  image: 'images/migrants.jpg',
   refs: ['카오스 제로 나이트메어 · 스텔라 파밀리아'],
   md: `
 ## 한 줄 컨셉

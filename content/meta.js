@@ -47,19 +47,47 @@ WORLD.pages.push({
   id: 'images',
   group: '자료',
   title: '이미지 작업',
-  subtitle: 'Gemini로 썸네일 만들기',
+  subtitle: 'NovelAI V5로 지역 컨셉아트 만들기',
   md: `
 ## 이미지 넣는 규칙
-- 지역 이미지는 \`images/<지역id>.png\` 로 저장하면 자동으로 표시된다.
+- 지역 이미지는 \`images/<지역id>.jpg\` 로 저장하면 자동으로 표시된다.
 - 지역 id: severya, hrimheim, cheongun, silent, zarqa, cascara, aura, migrants
-- 각 지역 페이지 아래에 **Gemini용 프롬프트**와 복사 버튼이 있다.
+- 각 지역 페이지의 '이미지 프롬프트' 탭에 프롬프트와 복사 버튼이 있다.
 
-## 방법 A: Gemini 앱에서 직접 (구독만으로 가능)
+## 현재 방식: NovelAI V5 Full (0 Anlas)
+| 설정 | 값 |
+|---|---|
+| 모델 | NAI Diffusion V5 Full |
+| 해상도 | 1216 × 832 (Normal 범위) |
+| Steps / Guidance | 28 / 5 |
+| 장수 | 1장 |
+| 사용하지 않음 | 업스케일, 바이브 트랜스퍼, 이미지 투 이미지 |
+
+- Opus 구독은 Normal 크기 · 1장 생성일 때 Anlas가 들지 않는다. 생성 버튼에 **0 Anlas** 가 보이는지 확인하고 누른다.
+- Undesired Content는 \`content/prompts.js\` 의 NEGATIVE 값을 쓴다.
+
+### 프롬프트 작성 요령 (시행착오에서 얻은 것)
+- **맨 앞에 게임 이름 태그**를 둔다: \`arknights\`, \`wuthering waves\`, \`zenless zone zero\`, \`reverse:1999\`. 이것만으로 화풍이 크게 달라진다.
+- V5는 **자연어 문장 1~2개 + 핵심 태그 10여 개** 조합이 잘 먹힌다. 문장 안에도 "in the style of ○○ background art"를 넣는다.
+- \`no humans, scenery\` 를 넣고, Undesired에 \`people, 1girl, 1boy\` 를 넣어 인물을 뺀다.
+- 지시하지 않은 행성이 끼어들면 Undesired에 \`planet, moon\` 을 넣는다.
+- 가중치: \`1.4::태그::\` 또는 \`{{태그}}\`. 단 **태그 안에 콜론이 있으면(reverse:1999) \`::\` 가중치를 쓰면 이미지가 노이즈로 깨진다.** 이때는 중괄호를 쓴다.
+- 분위기 태그로 지역 성격을 고정한다: 명일방주 계열은 \`muted colors, desaturated, dark atmosphere\`, 젠레스 존 제로 계열은 \`bold shapes, vivid colors, cel shading\`, 리버스 1999 계열은 \`vintage, painterly\`.
+
+| 지역 | 스타일 태그 |
+|---|---|
+| 세베랴 · 적막대 | arknights |
+| 흐림헤임 · 청운국 | wuthering waves |
+| 카스카라 · 철새 선단 | zenless zone zero |
+| 자르카 · 아우라 | reverse:1999 |
+
+## 예전 방식: Gemini
+### 방법 A: Gemini 앱에서 직접 (구독만으로 가능)
 1. 지역 페이지에서 프롬프트를 복사한다.
 2. Gemini 앱 또는 gemini.google.com에 붙여 넣고 이미지를 생성한다.
 3. 저장한 파일을 \`images/<지역id>.png\` 로 이름을 바꿔 넣는다.
 
-## 방법 B: Gemini API로 자동 생성
+### 방법 B: Gemini API로 자동 생성
 > Gemini 앱 구독(Google AI Pro 등)과 Gemini API는 **별개**다. API는 Google AI Studio에서 발급한 키로 쓰며, 이미지 모델의 무료 사용 범위와 요금은 AI Studio에서 확인해야 한다.
 
 1. [Google AI Studio](https://aistudio.google.com/apikey)에서 API 키를 발급한다.
@@ -78,6 +106,6 @@ python tools/gemini_images.py --only severya --force
 
 ## 프롬프트 수정
 - 프롬프트는 \`content/prompts.js\` 한 곳에서 관리한다. 사이트와 스크립트가 같은 파일을 읽는다.
-- 모든 프롬프트 끝에 공통 화풍 문장(STYLE)이 붙는다. 화풍을 통일하려면 그 문장만 고치면 된다.
+- STYLE 값은 모든 프롬프트 끝에 붙는 공통 문장이다. 지금은 지역마다 스타일이 달라 비워 두었다.
 `
 });
