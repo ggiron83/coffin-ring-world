@@ -66,6 +66,15 @@ WORLD.pages.push({
 - Opus 구독은 Normal 크기 · 1장 생성일 때 Anlas가 들지 않는다. 생성 버튼에 **0 Anlas** 가 보이는지 확인하고 누른다.
 - Undesired Content는 \`content/prompts.js\` 의 NEGATIVE 값을 쓴다.
 
+### 이미지 구성 (지역마다 3장)
+| 파일 | 내용 | 공통 화풍 · Undesired |
+|---|---|---|
+| \`<id>.jpg\` | 대표 이미지. 그 나라의 수도와 국토가 보이는 **조감 규모** | STYLE / NEGATIVE |
+| \`<id>_a.jpg\`, \`<id>_b.jpg\` | 상세 페이지 '풍경' 갤러리. 지방 특색 · 사람들이 오가는 생활 장면 | STYLE_LIFE / NEGATIVE_LIFE |
+
+- 생활 장면 프롬프트는 \`content/prompts.js\` 의 EXTRA, 설명 문구는 \`content/gallery.js\` 에 있다.
+- 대표 이미지는 \`aerial view, vast scale, metropolis\` 로 규모를 키우고, Undesired에 \`small village\` 를 넣는다.
+
 ### 화풍 통일 규칙
 - 모든 지역이 **같은 화풍 블록**을 쓴다. \`content/prompts.js\` 의 STYLE 값(절제된 채도, 회화풍, 부드러운 확산광)이 모든 지역 프롬프트 뒤에 붙는다.
 - 게임 태그는 **\`arknights\` 하나로 통일**한다. 지역마다 다른 게임 태그를 쓰면 화풍이 제각각이 된다 (이전 버전의 문제).
