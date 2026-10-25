@@ -84,7 +84,9 @@ def main():
 
     prompts = load_prompts()
     style = prompts.pop("STYLE", "")
-    prompts.pop("NEGATIVE", None)
+    # 생활 장면(EXTRA)과 Undesired 값은 NovelAI용이라 이 스크립트에서는 쓰지 않는다
+    for key in ("NEGATIVE", "STYLE_LIFE", "NEGATIVE_LIFE", "EXTRA"):
+        prompts.pop(key, None)
     ids = args.only or list(prompts)
     IMAGES_DIR.mkdir(exist_ok=True)
 
