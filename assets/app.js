@@ -159,7 +159,10 @@
 
     content.innerHTML = `<article class="detail">
       <div class="d-hero">
-        ${img(p, 'd-img')}
+        <div class="d-stage">
+          <div class="d-backdrop" style="background-image:url('${esc(p.image)}')"></div>
+          <button class="d-zoom" aria-label="대표 이미지 크게 보기">${img(p, 'd-img')}<span class="d-zoom-hint">⤢ 크게 보기</span></button>
+        </div>
         <a class="close" href="#" aria-label="갤러리로">×</a>
         <div class="d-caption">
           <div class="g-num">NO.${num(i)}</div>
@@ -209,6 +212,7 @@
     btns.forEach(b => b.onclick = () => show(+b.dataset.k));
     show(0);
     content.querySelectorAll('.scene-btn').forEach(b => b.onclick = () => openLightbox(b.dataset.src, b.dataset.cap));
+    content.querySelector('.d-zoom').onclick = () => openLightbox(p.image, `${p.title} · ${p.subtitle}`);
     galleryIndex = i;
   }
 
