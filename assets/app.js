@@ -149,6 +149,7 @@
 
   function detail(p) {
     const i = regions.indexOf(p);
+    const scenes = (WORLD.gallery && WORLD.gallery[p.id]) || [];
     const secs = sections(p).filter(s => !s.title.startsWith('한 줄 컨셉'));
     const prompt = prompts[p.id];
     if (prompt) secs.push({ title: '이미지 프롬프트', prompt: (prompt + ' ' + (prompts.STYLE || '')).trim(), negative: prompts.NEGATIVE });
@@ -166,6 +167,8 @@
           <p>${esc(p.subtitle)}</p>
         </div>
       </div>
+      ${scenes.length ? `<section class="scenes">${scenes.map(([src, cap]) =>
+        `<figure class="scene"><button class="scene-btn" data-src="${esc(src)}" data-cap="${esc(cap)}"><img src="${esc(src)}" alt="${esc(cap)}" loading="lazy"></button><figcaption>${esc(cap)}</figcaption></figure>`).join('')}</section>` : ''}
       <div class="d-body">
         <aside class="facts">
           ${fact('한 줄 컨셉', section(p, '한 줄 컨셉'))}
@@ -205,7 +208,19 @@
     }
     btns.forEach(b => b.onclick = () => show(+b.dataset.k));
     show(0);
+    content.querySelectorAll('.scene-btn').forEach(b => b.onclick = () => openLightbox(b.dataset.src, b.dataset.cap));
     galleryIndex = i;
+  }
+
+  function openLightbox(src, cap) {
+    const box = document.createElement('div');
+    box.className = 'lightbox';
+    box.innerHTML = `<figure><img src="${esc(src)}" alt="${esc(cap)}"><figcaption>${esc(cap)}</figcaption></figure><button class="close" aria-label="닫기">×</button>`;
+    const close = () => { box.remove(); document.removeEventListener('keydown', onKey); };
+    const onKey = e => { if (e.key === 'Escape') close(); };
+    box.onclick = close;
+    document.addEventListener('keydown', onKey);
+    document.body.appendChild(box);
   }
 
   /* ---------- docs, map ---------- */
