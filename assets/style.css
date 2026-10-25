@@ -170,9 +170,37 @@ body[data-view="detail"] .tabs a.on { background: rgba(255,255,255,.18); }
 .doc-card span { font-size: 13px; color: var(--muted); }
 .back { font-size: 14px; color: var(--muted); text-decoration: none; }
 .muted { color: var(--muted); }
-.map { width: 100%; height: auto; margin-top: 12px; }
-.map text { font-family: "Noto Sans KR", sans-serif; }
-.map a:hover ellipse { opacity: .8; }
+.page-wide { max-width: 1180px; }
+.worldmap { width: 100%; height: auto; margin-top: 12px; border-radius: 12px; border: 1px solid var(--border); font-family: "Noto Sans KR", sans-serif; }
+.worldmap .sea { fill: #d9e4e8; }
+.worldmap .land { fill: #ece6d6; stroke: #8c8573; stroke-width: 1.2; }
+.worldmap .rf { opacity: .55; }
+.worldmap a:hover .rf { opacity: .8; }
+.worldmap .rf-teal { fill: #9fe1cb; } .worldmap .rf-blue { fill: #b5d4f4; }
+.worldmap .rf-coral { fill: #f5c4b3; } .worldmap .rf-amber { fill: #fac775; }
+.worldmap .rf-pink { fill: #f4c0d1; }
+.worldmap .hatch { stroke: #6b6860; stroke-width: 1; opacity: .25; }
+.worldmap .crater { fill: #d3d1c7; stroke: #6b6860; stroke-width: 1.2; stroke-dasharray: 4 3; }
+.worldmap .crater-in { fill: none; stroke: #6b6860; stroke-width: .8; opacity: .6; }
+.worldmap .isle ellipse { fill: #cecbf6; stroke: #534ab7; stroke-width: 1; }
+.worldmap .river path, .worldmap .river-l { fill: none; stroke: #3f86b8; stroke-width: 1.8; }
+.worldmap .pipe { fill: none; stroke: #b0452f; stroke-width: 2.2; stroke-dasharray: 6 4; }
+.worldmap .mt { fill: none; stroke: #5b5446; stroke-width: 1.3; stroke-linejoin: round; }
+.worldmap .lat line { stroke: #6b6860; stroke-width: .7; stroke-dasharray: 2 5; opacity: .6; }
+.worldmap .lat text, .worldmap .wind text, .worldmap .buffer { font-size: 12px; fill: #5b5446; }
+.worldmap .buffer { font-style: italic; }
+.worldmap .wind { color: #5b5446; }
+.worldmap .wind line { stroke: #5b5446; stroke-width: 1.4; }
+.worldmap .city { fill: #2a2925; }
+.worldmap .cap { fill: #fff; stroke: #2a2925; stroke-width: 2; }
+.worldmap .star { fill: none; stroke: #b0452f; stroke-width: 1.6; }
+.worldmap .cl { font-size: 12px; fill: #2a2925; paint-order: stroke; stroke: #ece6d6; stroke-width: 3px; }
+.worldmap .rl { font-family: var(--serif); font-size: 19px; font-weight: 700; paint-order: stroke; stroke: #ece6d6; stroke-width: 4px; }
+.worldmap .rl-hrimheim { fill: #0f6e56; } .worldmap .rl-severya { fill: #185fa5; } .worldmap .rl-silent { fill: #444441; }
+.worldmap .rl-cheongun { fill: #993c1d; } .worldmap .rl-zarqa { fill: #854f0b; } .worldmap .rl-cascara { fill: #993556; }
+.worldmap .rl-aura { fill: #534ab7; }
+.worldmap .legend rect { fill: #f7f4ec; stroke: #8c8573; stroke-width: .8; }
+.worldmap .legend text { font-size: 12px; fill: #2a2925; }
 
 /* markdown */
 .md h2 { font-size: 21px; margin: 32px 0 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }

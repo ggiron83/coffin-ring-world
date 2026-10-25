@@ -7,16 +7,6 @@
   const content = document.getElementById('content');
   const tabs = document.getElementById('tabs');
 
-  const MAP_REGIONS = [
-    { id: 'hrimheim', cx: 170, cy: 120, rx: 110, ry: 55 },
-    { id: 'severya', cx: 470, cy: 110, rx: 150, ry: 55 },
-    { id: 'silent', cx: 340, cy: 230, rx: 95, ry: 40 },
-    { id: 'cheongun', cx: 540, cy: 260, rx: 100, ry: 55 },
-    { id: 'zarqa', cx: 350, cy: 340, rx: 110, ry: 45 },
-    { id: 'cascara', cx: 135, cy: 330, rx: 95, ry: 50 },
-    { id: 'aura', cx: 550, cy: 405, rx: 90, ry: 35 }
-  ];
-
   let galleryIndex = 0;
   let stopWheel = null;
 
@@ -161,7 +151,7 @@
     const i = regions.indexOf(p);
     const secs = sections(p).filter(s => !s.title.startsWith('한 줄 컨셉'));
     const prompt = prompts[p.id];
-    if (prompt) secs.push({ title: '이미지 프롬프트', prompt: prompt + ' ' + (prompts.STYLE || '') });
+    if (prompt) secs.push({ title: '이미지 프롬프트', prompt: (prompt + ' ' + (prompts.STYLE || '')).trim(), negative: prompts.NEGATIVE });
     const prev = regions[(i - 1 + regions.length) % regions.length];
     const next = regions[(i + 1) % regions.length];
     const fact = (label, body) => body ? `<div class="fact"><div class="fact-k">${label}</div><div class="fact-v md">${md(body)}</div></div>` : '';
@@ -201,9 +191,10 @@
       const s = secs[k];
       btns.forEach((b, j) => b.classList.toggle('on', j === k));
       if (s.prompt) {
-        panel.innerHTML = `<p class="muted">복사해서 Gemini에 붙여 넣고, 결과를 <code>${esc(p.image)}</code> 로 저장하면 갤러리와 이 페이지에 표시됩니다.</p>
+        panel.innerHTML = `<p class="muted">NovelAI V5 Full · 1216×832 · Steps 28 · Guidance 5 (Opus 기준 0 Anlas). 결과를 <code>${esc(p.image)}</code> 로 저장하면 갤러리와 이 페이지에 표시됩니다. 자세한 방법은 <a href="#images">이미지 작업</a> 문서에 있습니다.</p>
           <div class="prompt-text" id="promptText">${esc(s.prompt)}</div>
-          <button class="btn" id="copyBtn">프롬프트 복사</button>`;
+          <button class="btn" id="copyBtn">프롬프트 복사</button>
+          ${s.negative ? `<p class="muted" style="margin-top:16px">Undesired Content</p><div class="prompt-text">${esc(s.negative)}</div>` : ''}`;
         const copyBtn = document.getElementById('copyBtn');
         copyBtn.onclick = () => navigator.clipboard.writeText(s.prompt).then(
           () => { copyBtn.textContent = '복사됨'; setTimeout(() => copyBtn.textContent = '프롬프트 복사', 1500); },
@@ -239,18 +230,10 @@
   }
 
   function map() {
-    const shapes = MAP_REGIONS.map(r => {
-      const p = byId[r.id], t = p.tone;
-      return `<a href="#${r.id}">
-        <ellipse cx="${r.cx}" cy="${r.cy}" rx="${r.rx}" ry="${r.ry}" fill="var(--${t}-bg)" stroke="var(--${t})" stroke-width="1"/>
-        <text x="${r.cx}" y="${r.cy - 8}" text-anchor="middle" dominant-baseline="central" fill="var(--${t})" font-size="15" font-weight="500">${esc(p.title)}</text>
-        <text x="${r.cx}" y="${r.cy + 14}" text-anchor="middle" dominant-baseline="central" fill="var(--${t})" font-size="12">${esc(p.subtitle.split(' · ')[1] || '')}</text>
-      </a>`;
-    }).join('');
-    content.innerHTML = `<section class="page">
-      <h1 class="page-title">대륙 지도</h1>
-      <p class="muted">위 = 북 · 적도로 갈수록 관륜이 머리 위로 · 지역을 누르면 해당 문서로 이동합니다. 철새 선단은 대륙을 순환하는 유랑 세력이라 지도에 표시하지 않습니다.</p>
-      <svg class="map" viewBox="0 50 680 410" role="img" aria-label="관륜 세계 지도">${shapes}</svg>
+    content.innerHTML = `<section class="page page-wide">
+      <h1 class="page-title">관륜 대륙</h1>
+      <p class="muted">위 = 북. 지역을 누르면 해당 문서로 이동합니다. 지형 · 기후 · 국경의 근거는 <a href="#geography">지리와 기후</a> 문서에 있습니다. 철새 선단은 대륙을 순환하는 유랑 세력이라 표시하지 않습니다.</p>
+      ${WORLD.mapSvg || ''}
     </section>`;
   }
 
