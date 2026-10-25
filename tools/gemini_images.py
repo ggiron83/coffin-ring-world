@@ -84,6 +84,7 @@ def main():
 
     prompts = load_prompts()
     style = prompts.pop("STYLE", "")
+    prompts.pop("NEGATIVE", None)
     ids = args.only or list(prompts)
     IMAGES_DIR.mkdir(exist_ok=True)
 
