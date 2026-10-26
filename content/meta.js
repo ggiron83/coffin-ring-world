@@ -72,7 +72,7 @@ WORLD.pages.push({
 | \`<id>.jpg\` | 대표 이미지. 그 나라의 수도와 국토가 보이는 **조감 규모** | STYLE / NEGATIVE |
 | \`<id>_a.jpg\`, \`<id>_b.jpg\` | 상세 페이지 '풍경' 갤러리. 지방 특색 · 사람들이 오가는 생활 장면 | STYLE_LIFE / NEGATIVE_LIFE |
 
-- 생활 장면 프롬프트는 \`content/prompts.js\` 의 EXTRA, 설명 문구는 \`content/gallery.js\` 에 있다. 생성할 때는 뒤에 STYLE_LIFE를 붙인다.
+- 생활 장면 프롬프트는 \`content/prompts.js\` 의 EXTRA, 설명 문구는 \`content/gallery.js\` 에 있다. 생성할 때는 앞에 LoL 화풍 머리말(아래), 뒤에 STYLE_LIFE를 붙인다.
 
 ### 대도시로 보이게 하는 규칙
 - \`very high aerial view, view from high altitude, extreme wide shot, vast metropolis stretching to the horizon, countless tiny buildings\` 로 시점을 아주 높이 올린다.
@@ -80,12 +80,11 @@ WORLD.pages.push({
 - Undesired에 \`repetitive buildings, identical buildings, small town, single building, fortress\` 를 넣는다.
 - 실재 국가 · 양식 이름(소련, 페르시아 등) 대신 이 세계 고유의 건축 묘사를 쓴다.
 
-### 화풍 통일 규칙 (현재: 킬튜브 키 비주얼 계열)
-- 참고 그림: 킬튜브(KILLTUBE) 키 비주얼. 높은 곳에서 아래로 내려다보는 극적인 원근, 건물이 겹겹이 쌓인 수직 도시, 간판 · 현수막 · 등불 · 전선이 가득한 맥시멀한 디테일, 따뜻한 햇빛과 청록 하늘, 손그림 질감.
-- 모든 지역이 **같은 화풍 블록**(STYLE / STYLE_LIFE)을 쓴다. 게임 이름 태그는 쓰지 않고 \`key visual, highly detailed anime background art, painterly brush strokes, maximalist\` 같은 묘사로 화풍을 만든다.
-- \`fisheye\` 를 넣으면 화면 아래에 둥근 테두리 왜곡이 생긴다. Undesired에 \`fisheye, circular frame, vignette\` 를 넣는다.
-- \`weathered wood\` 를 대표 이미지에 쓰면 모든 지역이 갈색 목조 건물이 되어 지역색이 사라진다. 대표 이미지에는 \`weathered surfaces and grime\` 만 쓴다.
-- 이전 시도: arknights(절제된 회화풍) → League of Legends 지역 아트(극적인 빛) → 현재. 지역마다 다른 게임 태그를 쓰면 화풍이 제각각이 된다.
+### 화풍 통일 규칙 (현재: 리그 오브 레전드 지역 아트 계열)
+- 모든 지역이 **같은 화풍 블록**을 쓴다. 프롬프트 맨 앞은 \`league of legends, official art, splash art, game cg, in the style of League of Legends region art,\`, 뒤에는 STYLE 값(극적인 조명, 풍부한 색, 영화 같은 구도, 회화풍)이 붙는다. 생활 장면도 같은 머리말 + STYLE_LIFE.
+- 이전에 쓴 \`arknights\` 화풍보다 규모감과 극적인 빛이 잘 산다.
+- 킬튜브 키 비주얼풍(건물 협곡 · 맥시멀 간판 · 손그림 질감)도 시도했지만 원하는 느낌과 달라 되돌렸다.
+- 지역마다 다른 게임 태그를 쓰면 화풍이 제각각이 된다.
 - Undesired에 \`neon lights, cyberpunk, hologram, oversaturated\` 를 넣어 흔한 네온 사이버펑크로 흐르지 않게 한다.
 - 대체과학 요소는 안테나 · 배관 · 송신탑처럼 **건축에 녹여서** 절제해 넣는다.
 
