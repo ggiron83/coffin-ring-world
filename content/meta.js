@@ -72,17 +72,23 @@ WORLD.pages.push({
 | \`<id>.jpg\` | 대표 이미지. 그 나라의 수도와 국토가 보이는 **조감 규모** | STYLE / NEGATIVE |
 | \`<id>_a.jpg\`, \`<id>_b.jpg\` | 상세 페이지 '풍경' 갤러리. 지방 특색 · 사람들이 오가는 생활 장면 | STYLE_LIFE / NEGATIVE_LIFE |
 
-- 생활 장면 프롬프트는 \`content/prompts.js\` 의 EXTRA, 설명 문구는 \`content/gallery.js\` 에 있다.
-- 대표 이미지는 \`aerial view, vast scale, metropolis\` 로 규모를 키우고, Undesired에 \`small village\` 를 넣는다.
+- 생활 장면 프롬프트는 \`content/prompts.js\` 의 EXTRA, 설명 문구는 \`content/gallery.js\` 에 있다. 생성할 때는 앞에 LoL 화풍 태그(아래), 뒤에 STYLE_LIFE를 붙인다.
+
+### 대도시로 보이게 하는 규칙
+- \`very high aerial view, view from high altitude, extreme wide shot, vast metropolis stretching to the horizon, countless tiny buildings\` 로 시점을 아주 높이 올린다.
+- 도시를 **구역별로 나눠 묘사**한다 (구시가 · 공업지대 · 주거 격자 · 관청가 · 항구 · 강과 다리). 한 종류의 건물만 쓰면 같은 건물이 반복된다.
+- Undesired에 \`repetitive buildings, identical buildings, small town, single building, fortress\` 를 넣는다.
+- 실재 국가 · 양식 이름(소련, 페르시아 등) 대신 이 세계 고유의 건축 묘사를 쓴다.
 
 ### 화풍 통일 규칙
-- 모든 지역이 **같은 화풍 블록**을 쓴다. \`content/prompts.js\` 의 STYLE 값(절제된 채도, 회화풍, 부드러운 확산광)이 모든 지역 프롬프트 뒤에 붙는다.
-- 게임 태그는 **\`arknights\` 하나로 통일**한다. 지역마다 다른 게임 태그를 쓰면 화풍이 제각각이 된다 (이전 버전의 문제).
+- 모든 지역이 **같은 화풍 블록**을 쓴다. 프롬프트 맨 앞은 \`league of legends, official art, splash art, game cg, in the style of League of Legends region art,\`, 뒤에는 STYLE 값(극적인 조명, 풍부한 색, 영화 같은 구도, 회화풍)이 붙는다.
+- 리그 오브 레전드의 지역 아트를 참고한 화풍이다. 이전에 쓴 \`arknights\` 화풍보다 규모감과 극적인 빛이 잘 산다.
+- 지역마다 다른 게임 태그를 쓰면 화풍이 제각각이 된다 (이전 버전의 문제).
 - Undesired에 \`neon lights, cyberpunk, hologram, oversaturated\` 를 넣어 흔한 네온 사이버펑크로 흐르지 않게 한다.
 - 대체과학 요소는 안테나 · 배관 · 송신탑처럼 **건축에 녹여서** 절제해 넣는다.
 
 ### 프롬프트 작성 요령 (시행착오에서 얻은 것)
-- **맨 앞에 게임 이름 태그**를 두면 화풍이 크게 달라진다: \`arknights\`, \`wuthering waves\`, \`zenless zone zero\`, \`reverse:1999\`.
+- **맨 앞에 게임 이름 태그**를 두면 화풍이 크게 달라진다: \`league of legends\`, \`arknights\`, \`wuthering waves\`, \`zenless zone zero\`, \`reverse:1999\`.
 - V5는 **자연어 문장 1~2개 + 핵심 태그 10여 개** 조합이 잘 먹힌다. 문장 안에도 "in the style of ○○ background art"를 넣는다.
 - \`no humans, scenery\` 를 넣고, Undesired에 \`people, 1girl, 1boy\` 를 넣어 인물을 뺀다.
 - 지시하지 않은 행성이 끼어들면 Undesired에 \`planet, moon\` 을 넣는다.
