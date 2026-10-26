@@ -49,6 +49,11 @@ WORLD.pages.push({
   title: '이미지 작업',
   subtitle: 'NovelAI V5로 지역 컨셉아트 만들기',
   md: `
+## 사이트에서 바로 교체하기 (편집 탭)
+- 상단의 **편집** 탭에서 바꿀 칸에 이미지를 끌어 놓고 **사이트에 반영**을 누르면 저장소의 같은 파일을 덮어쓴다. 그 이미지를 쓰는 갤러리 카드 · 상세 페이지 · 확대 보기가 모두 함께 바뀐다.
+- 처음 한 번 GitHub Fine-grained 토큰(이 저장소만, Contents: Read and write)을 넣어 둔다. 토큰은 그 브라우저에만 저장된다.
+- 바뀐 파일의 버전은 \`content/imgver.json\` 에 기록되어 캐시 때문에 옛 이미지가 보이지 않는다.
+
 ## 이미지 넣는 규칙
 - 지역 이미지는 \`images/<지역id>.jpg\` 로 저장하면 자동으로 표시된다.
 - 지역 id: severya, hrimheim, cheongun, silent, zarqa, cascara, aura, migrants
