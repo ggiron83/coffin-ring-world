@@ -9,6 +9,14 @@
 
   let galleryIndex = 0;
   let stopWheel = null;
+  // content/imgver.json: { "images/x.jpg": 버전 } — 편집 탭에서 이미지를 교체하면 갱신된다
+  let imgVer = {};
+
+  function basePath(path) { return String(path).split('?')[0]; }
+  function src(path) {
+    const v = imgVer[basePath(path)];
+    return v ? `${basePath(path)}?v=${v}` : path;
+  }
 
   function esc(s) {
     return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
@@ -33,7 +41,7 @@
   }
   function img(p, cls) {
     return `<div class="${cls} tone-${p.tone || 'gray'}" data-fallback="${esc(p.title)}">` +
-      `<img src="${esc(p.image)}" alt="${esc(p.title)}" draggable="false" onerror="this.parentNode.textContent=this.parentNode.dataset.fallback"></div>`;
+      `<img src="${esc(src(p.image))}" alt="${esc(p.title)}" draggable="false" onerror="this.parentNode.textContent=this.parentNode.dataset.fallback"></div>`;
   }
 
   /* ---------- gallery: rotating arc of region cards ---------- */
@@ -160,7 +168,7 @@
     content.innerHTML = `<article class="detail">
       <div class="d-hero">
         <div class="d-stage">
-          <div class="d-backdrop" style="background-image:url('${esc(p.image)}')"></div>
+          <div class="d-backdrop" style="background-image:url('${esc(src(p.image))}')"></div>
           <button class="d-zoom" aria-label="대표 이미지 크게 보기">${img(p, 'd-img')}<span class="d-zoom-hint">⤢ 크게 보기</span></button>
         </div>
         <a class="close" href="#" aria-label="갤러리로">×</a>
@@ -170,8 +178,8 @@
           <p>${esc(p.subtitle)}</p>
         </div>
       </div>
-      ${scenes.length ? `<section class="scenes">${scenes.map(([src, cap]) =>
-        `<figure class="scene"><button class="scene-btn" data-src="${esc(src)}" data-cap="${esc(cap)}"><img src="${esc(src)}" alt="${esc(cap)}" loading="lazy"></button><figcaption>${esc(cap)}</figcaption></figure>`).join('')}</section>` : ''}
+      ${scenes.length ? `<section class="scenes">${scenes.map(([path, cap]) =>
+        `<figure class="scene"><button class="scene-btn" data-src="${esc(src(path))}" data-cap="${esc(cap)}"><img src="${esc(src(path))}" alt="${esc(cap)}" loading="lazy"></button><figcaption>${esc(cap)}</figcaption></figure>`).join('')}</section>` : ''}
       <div class="d-body">
         <aside class="facts">
           ${fact('한 줄 컨셉', section(p, '한 줄 컨셉'))}
@@ -212,7 +220,7 @@
     btns.forEach(b => b.onclick = () => show(+b.dataset.k));
     show(0);
     content.querySelectorAll('.scene-btn').forEach(b => b.onclick = () => openLightbox(b.dataset.src, b.dataset.cap));
-    content.querySelector('.d-zoom').onclick = () => openLightbox(p.image, `${p.title} · ${p.subtitle}`);
+    content.querySelector('.d-zoom').onclick = () => openLightbox(src(p.image),`${p.title} · ${p.subtitle}`);
     galleryIndex = i;
   }
 
@@ -256,6 +264,156 @@
     </section>`;
   }
 
+  /* ---------- image editor: 이미지를 넣으면 GitHub 저장소의 같은 파일을 덮어쓴다 ---------- */
+
+  const REPO = 'ggiron83/coffin-ring-world';
+  const BRANCH = 'main';
+  const VER_FILE = 'content/imgver.json';
+
+  function slots() {
+    return regions.flatMap(p => [
+      { path: basePath(p.image), label: `${p.title} · 대표 이미지`, note: '갤러리 카드 · 상세 페이지 상단' },
+      ...((WORLD.gallery || {})[p.id] || []).map(([path, cap], k) =>
+        ({ path: basePath(path), label: `${p.title} · 풍경 ${k + 1}`, note: cap }))
+    ]);
+  }
+
+  function toJpeg(file, maxW) {
+    return new Promise((resolve, reject) => {
+      const im = new Image();
+      im.onload = () => {
+        const s = Math.min(1, maxW / im.naturalWidth);
+        const c = document.createElement('canvas');
+        c.width = Math.round(im.naturalWidth * s);
+        c.height = Math.round(im.naturalHeight * s);
+        c.getContext('2d').drawImage(im, 0, 0, c.width, c.height);
+        URL.revokeObjectURL(im.src);
+        resolve(c.toDataURL('image/jpeg', 0.9));
+      };
+      im.onerror = () => reject(new Error('이미지를 읽을 수 없습니다'));
+      im.src = URL.createObjectURL(file);
+    });
+  }
+
+  const b64utf8 = s => btoa(unescape(encodeURIComponent(s)));
+  const utf8b64 = s => decodeURIComponent(escape(atob(s.replace(/\n/g, ''))));
+
+  async function gh(token, path, body) {
+    const url = `https://api.github.com/repos/${REPO}/contents/${path}` + (body ? '' : `?ref=${BRANCH}`);
+    const r = await fetch(url, {
+      method: body ? 'PUT' : 'GET',
+      cache: 'no-store',
+      headers: { Authorization: `Bearer ${token}`, Accept: 'application/vnd.github+json' },
+      body: body ? JSON.stringify(body) : undefined
+    });
+    if (!body && r.status === 404) return null;
+    if (!r.ok) {
+      const e = await r.json().catch(() => ({}));
+      throw new Error(`${r.status} ${e.message || ''}`.trim());
+    }
+    return r.json();
+  }
+  async function putFile(token, path, b64, message) {
+    const cur = await gh(token, path);
+    return gh(token, path, { message, content: b64, branch: BRANCH, ...(cur ? { sha: cur.sha } : {}) });
+  }
+
+  function editor() {
+    const list = slots();
+    const pending = {};
+    let token = '';
+    try { token = localStorage.getItem('ghToken') || ''; } catch (e) {}
+
+    content.innerHTML = `<section class="page page-wide">
+      <h1 class="page-title">이미지 편집</h1>
+      <p class="muted">칸에 이미지를 끌어 놓거나 눌러서 고른 뒤 <b>사이트에 반영</b>을 누르면, 그 이미지를 쓰는 모든 곳(갤러리 카드 · 상세 페이지 · 확대 보기)이 함께 바뀝니다. PNG · WebP도 JPG(최대 가로 1920px)로 바꿔서 올립니다. 반영까지 1~2분 걸립니다.</p>
+      <details class="ed-token" ${token ? '' : 'open'}>
+        <summary>GitHub 토큰 ${token ? '<span class="ed-ok">저장됨</span>' : '<span class="ed-warn">필요</span>'}</summary>
+        <p class="muted">GitHub → Settings → Developer settings → Fine-grained tokens에서 <b>ggiron83/coffin-ring-world</b> 저장소만, 권한은 <b>Contents: Read and write</b>로 만든 토큰을 넣습니다. 토큰은 이 브라우저에만 저장되고 GitHub API 외에는 보내지 않습니다.</p>
+        <div class="ed-row"><input type="password" id="edToken" placeholder="github_pat_…" autocomplete="off" value="${esc(token)}"><button class="btn" id="edSave">저장</button><button class="btn btn-ghost" id="edClear">지우기</button></div>
+      </details>
+      <div class="ed-grid">${list.map((s, i) => `<label class="ed-slot" data-i="${i}">
+          <div class="ed-thumb"><img src="${esc(src(s.path))}" alt=""><span class="ed-badge">새 이미지</span></div>
+          <b>${esc(s.label)}</b><span class="muted">${esc(s.note)}</span><code>${esc(s.path)}</code>
+          <input type="file" accept="image/*" hidden>
+        </label>`).join('')}</div>
+      <div class="ed-bar" id="edBar" hidden><span id="edCount"></span><button class="btn btn-ghost" id="edReset">취소</button><button class="btn" id="edCommit">사이트에 반영</button></div>
+      <p class="ed-log" id="edLog"></p>
+    </section>`;
+
+    const bar = document.getElementById('edBar');
+    const log = document.getElementById('edLog');
+    const say = (t, bad) => { log.textContent = t; log.classList.toggle('bad', !!bad); };
+    const refresh = () => {
+      const n = Object.keys(pending).length;
+      bar.hidden = !n;
+      document.getElementById('edCount').textContent = `${n}개 교체 대기`;
+    };
+
+    async function pick(slotEl, file) {
+      if (!file || !file.type.startsWith('image/')) return say('이미지 파일만 넣을 수 있습니다', true);
+      try {
+        const data = await toJpeg(file, 1920);
+        const i = +slotEl.dataset.i;
+        pending[i] = data.split(',')[1];
+        slotEl.querySelector('img').src = data;
+        slotEl.classList.add('is-new');
+        say('');
+        refresh();
+      } catch (e) { say(e.message, true); }
+    }
+
+    content.querySelectorAll('.ed-slot').forEach(el => {
+      const input = el.querySelector('input');
+      input.onchange = () => pick(el, input.files[0]);
+      el.addEventListener('dragover', e => { e.preventDefault(); el.classList.add('is-over'); });
+      el.addEventListener('dragleave', () => el.classList.remove('is-over'));
+      el.addEventListener('drop', e => { e.preventDefault(); el.classList.remove('is-over'); pick(el, e.dataTransfer.files[0]); });
+    });
+
+    document.getElementById('edSave').onclick = () => {
+      token = document.getElementById('edToken').value.trim();
+      try { localStorage.setItem('ghToken', token); } catch (e) {}
+      say(token ? '토큰을 저장했습니다' : '토큰이 비어 있습니다', !token);
+    };
+    document.getElementById('edClear').onclick = () => {
+      token = '';
+      document.getElementById('edToken').value = '';
+      try { localStorage.removeItem('ghToken'); } catch (e) {}
+      say('토큰을 지웠습니다');
+    };
+    document.getElementById('edReset').onclick = () => editor();
+
+    document.getElementById('edCommit').onclick = async e => {
+      if (!token) return say('먼저 GitHub 토큰을 저장해 주세요', true);
+      const btn = e.currentTarget;
+      btn.disabled = true;
+      try {
+        const done = [];
+        for (const i of Object.keys(pending)) {
+          const s = list[i];
+          say(`올리는 중: ${s.path}`);
+          await putFile(token, s.path, pending[i], `이미지 교체: ${s.label}`);
+          done.push(s.path);
+        }
+        say('버전 파일 갱신 중');
+        const cur = await gh(token, VER_FILE);
+        const ver = cur ? JSON.parse(utf8b64(cur.content)) : {};
+        const stamp = Date.now().toString(36);
+        done.forEach(p => { ver[p] = stamp; imgVer[p] = stamp; });
+        await gh(token, VER_FILE, { message: '이미지 버전 갱신', content: b64utf8(JSON.stringify(ver, null, 1) + '\n'), branch: BRANCH, ...(cur ? { sha: cur.sha } : {}) });
+        done.forEach(p => { const i = list.findIndex(s => s.path === p); delete pending[i]; });
+        content.querySelectorAll('.ed-slot.is-new').forEach(el => el.classList.remove('is-new'));
+        refresh();
+        say(`${done.length}개 반영 완료. 1~2분 뒤 새로고침하면 사이트에 보입니다.`);
+      } catch (err) {
+        say(`실패: ${err.message}. 토큰 권한(Contents: Read and write)과 저장소를 확인해 주세요.`, true);
+      } finally {
+        btn.disabled = false;
+      }
+    };
+  }
+
   /* ---------- routing ---------- */
 
   function route() {
@@ -266,6 +424,7 @@
     if (!id) gallery();
     else if (id === 'map') { map(); tab = 'map'; }
     else if (id === 'docs') { docsIndex(); tab = 'docs'; }
+    else if (id === 'edit') { editor(); tab = 'edit'; }
     else if (p && p.group === '지역') detail(p);
     else if (p) { doc(p); tab = 'docs'; }
     else gallery();
@@ -285,6 +444,12 @@
   };
   try { const t = localStorage.getItem('theme'); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
 
-  window.addEventListener('hashchange', route);
-  route();
+  fetch('content/imgver.json', { cache: 'no-store' })
+    .then(r => (r.ok ? r.json() : {}))
+    .catch(() => ({}))
+    .then(v => {
+      imgVer = v || {};
+      window.addEventListener('hashchange', route);
+      route();
+    });
 })();
